@@ -96,6 +96,37 @@ public class AccountTest {
 		assertFalse(her.getIncomingRequests().contains(me.getUserName()));
 	}
 
+	@Test
+	public void newAccountHasNoOutgoingRequests() {
+		assertEquals(0, me.getOutgoingRequests().size());
+	}
+
+	@Test
+	public void requestFriendshipAddsReceiverToSendersOutgoingRequests() {
+		me.requestFriendship(her);
+		assertTrue(her.getOutgoingRequests().contains(me.getUserName()));
+	}
+
+	@Test
+	public void acceptedRequestRemovesReceiverFromOutgoingRequests() {
+		me.requestFriendship(her);
+		her.friendshipAccepted(me);
+		assertFalse(her.getOutgoingRequests().contains(me.getUserName()));
+	}
+
+	@Test
+	public void selfRequestDoesNotAddOutgoingRequest() {
+		me.requestFriendship(me);
+		assertFalse(me.getOutgoingRequests().contains(me.getUserName()));
+	}
+
+	@Test
+	public void requestingExistingFriendAddsNoOutgoingRequest() {
+		becomeFriends(her, me);
+		me.requestFriendship(her);
+		assertFalse(her.getOutgoingRequests().contains(me.getUserName()));
+	}
+
 	private void becomeFriends(Account requester, Account receiver) {
 		receiver.requestFriendship(requester);
 		requester.friendshipAccepted(receiver);

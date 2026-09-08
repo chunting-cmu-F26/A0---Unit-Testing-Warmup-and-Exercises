@@ -46,11 +46,26 @@ public class SocialNetworkTest {
 		assertTrue(members.contains("Cecile"));
 	}
 	
-	@Test 
+	@Test
 	public void sendFriendshipToAddsRequesterToIncomingRequests() {
 		joinHakanAndCecile();
 		sn.sendFriendshipTo("Cecile", me);
 		assertTrue(her.getIncomingRequests().contains("Hakan"));
+	}
+
+	@Test
+	public void sendFriendshipToAddsTargetToOutgoingRequests() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		assertTrue(me.getOutgoingRequests().contains("Cecile"));
+	}
+
+	@Test
+	public void acceptFriendshipFromRemovesTargetFromOutgoingRequests() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.acceptFriendshipFrom("Hakan", her);
+		assertFalse(me.getOutgoingRequests().contains("Cecile"));
 	}
 	
 	@Test 
@@ -126,9 +141,48 @@ public class SocialNetworkTest {
 		assertFalse(her.hasFriend("Hakan"));
 	}
 
+	@Test
+	public void acceptAllFriendshipsToMakesAllRequestersFriends() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Hakan", her);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptAllFriendshipsTo(me);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(me.hasFriend("Serra"));
+	}
+
+	@Test
+	public void acceptAllFriendshipsToClearsIncomingRequests() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Hakan", her);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptAllFriendshipsTo(me);
+		assertEquals(0, me.getIncomingRequests().size());
+	}
+
+	@Test
+	public void acceptAllFriendshipsToRemovesMeFromRequestersOutgoingRequests() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptAllFriendshipsTo(me);
+		assertFalse(her.getOutgoingRequests().contains("Hakan"));
+	}
+
+	@Test
+	public void acceptAllFriendshipsToWithNoPendingRequestsLeavesFriendsUnchanged() {
+		joinHakanAndCecile();
+		sn.acceptAllFriendshipsTo(me);
+		assertEquals(0, me.getFriends().size());
+	}
+
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
+	}
+
+	private Account joinHakanCecileAndSerra() {
+		joinHakanAndCecile();
+		return sn.join("Serra");
 	}
 
 }

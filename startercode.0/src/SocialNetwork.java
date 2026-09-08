@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Collection;
+import java.util.Set;
 
 public class SocialNetwork {
 	
@@ -54,6 +55,16 @@ public class SocialNetwork {
 			return;
 		}
 		accountForUserName.friendshipAccepted(me);
+	}
+
+	public void acceptAllFriendshipsTo(Account me) {
+		if (me == null) {
+			return;
+		}
+		Set<String> pending = new HashSet<String>(me.getIncomingRequests());
+		for (String requesterName : pending) {
+			acceptFriendshipFrom(requesterName, me);
+		}
 	}
 
 }

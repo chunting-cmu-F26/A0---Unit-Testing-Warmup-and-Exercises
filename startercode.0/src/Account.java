@@ -9,6 +9,9 @@ public class Account  {
 	
 	// list of members who are awaiting an acceptance response from this account's owner 
 	private Set<String> incomingRequests = new HashSet<String>();
+
+	// list of members to whom this account's owner has sent a request with no response yet
+	private Set<String> outgoingRequests = new HashSet<String>();
 	
 	// list of members who are friends of this account's owner
 	private Set<String> friends = new HashSet<String>();
@@ -27,6 +30,10 @@ public class Account  {
 		return incomingRequests; 
 	}
 
+	public Set<String> getOutgoingRequests() {
+		return outgoingRequests;
+	}
+
 	// an incoming friend request to this account's owner from another member account
 	public void requestFriendship(Account fromAccount) {
 		if (fromAccount == null || fromAccount.getUserName().equals(userName)) {
@@ -34,6 +41,7 @@ public class Account  {
 		}
 		if (!friends.contains(fromAccount.getUserName())) {
 			incomingRequests.add(fromAccount.getUserName());
+			fromAccount.outgoingRequests.add(this.userName);
 		}
 	}
 
@@ -51,6 +59,8 @@ public class Account  {
 		toAccount.friends.add(this.getUserName());
 		toAccount.incomingRequests.remove(this.getUserName());
 		incomingRequests.remove(toAccount.getUserName());
+		outgoingRequests.remove(toAccount.getUserName());
+		toAccount.outgoingRequests.remove(this.getUserName());
 	}
 	
 	public Set<String> getFriends() {
