@@ -230,6 +230,49 @@ public class SocialNetworkTest {
 		assertEquals(0, her.getOutgoingRequests().size());
 	}
 
+	@Test
+	public void cancelFriendshipRemovesEachOtherFromFriends() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.acceptFriendshipFrom("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		sn.sendFriendshipCancellationTo("Cecile", me);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void cancelFriendshipWhenNotFriends() {
+		joinHakanAndCecile();
+		assertFalse(me.hasFriend("Cecile"));
+		sn.sendFriendshipCancellationTo("Cecile", me);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void cancelMyselfFromFriends() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.acceptFriendshipFrom("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Hakan"));
+		sn.sendFriendshipCancellationTo("Hakan", me);
+		assertTrue(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void cancelFriendshipFromNonExistingAccount() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.acceptFriendshipFrom("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		sn.sendFriendshipCancellationTo("Ghost", me);
+		assertTrue(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Ghost"));
+	}
+
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");

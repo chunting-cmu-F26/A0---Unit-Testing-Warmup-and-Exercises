@@ -93,4 +93,12 @@ public class SocialNetwork {
 		}
 		me.autoAcceptFriendships();
 	}
+
+	public void sendFriendshipCancellationTo(String userName, Account me) {
+		Account accountForUserName = findAccountForUserName(userName);
+		if (accountForUserName == null) {
+			return;
+		}
+		accountForUserName.cancelFriendship(me);
+	}
 }

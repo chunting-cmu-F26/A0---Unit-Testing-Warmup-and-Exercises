@@ -78,6 +78,14 @@ public class Account  {
 		outgoingRequests.remove(toAccount.getUserName());
 		toAccount.outgoingRequests.remove(this.getUserName());
 	}
+
+	public void cancelFriendship(Account toAccount) {
+		if (toAccount == null || !friends.contains(toAccount.getUserName())) {
+			return;
+		}
+		friends.remove(toAccount.getUserName());
+		toAccount.friends.remove(this.getUserName());
+	}
 	
 	public void autoAcceptFriendships() {
 		Auto = true;
