@@ -183,6 +183,28 @@ public class SocialNetworkTest {
 		assertFalse(me.getOutgoingRequests().contains("Cecile"));
 	}
 
+	@Test
+	public void rejectAllFriendshipsToClearsIncomingRequests() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.sendFriendshipTo("Cecile", another);
+		assertEquals(2, her.getIncomingRequests().size());
+		sn.rejectAllFriendshipsTo(her);
+		assertEquals(0, her.getIncomingRequests().size());
+	}
+
+	@Test
+	public void rejectAllFriendshipsToClearsOutgoingRequests() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.sendFriendshipTo("Cecile", another);
+		assertEquals(1, me.getOutgoingRequests().size());
+		assertEquals(1, another.getOutgoingRequests().size());
+		sn.rejectAllFriendshipsTo(her);
+		assertEquals(0, me.getOutgoingRequests().size());
+		assertEquals(0, another.getOutgoingRequests().size());
+	}
+	
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");

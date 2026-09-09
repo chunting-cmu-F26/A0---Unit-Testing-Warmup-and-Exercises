@@ -76,4 +76,14 @@ public class SocialNetwork {
 		}
 	}
 
+
+	public void rejectAllFriendshipsTo(Account me) {
+		if (me == null) {
+			return;
+		}
+		Set<String> pending = new HashSet<String>(me.getIncomingRequests());
+		for (String requesterName : pending) {
+			rejectFriendshipFrom(requesterName, me);
+		}
+	}
 }
