@@ -204,7 +204,32 @@ public class SocialNetworkTest {
 		assertEquals(0, me.getOutgoingRequests().size());
 		assertEquals(0, another.getOutgoingRequests().size());
 	}
+
+	@Test
+	public void autoAcceptFriendshipWhenBecomeFriends() {
+		joinHakanAndCecile();
+		sn.autoAcceptFriendshipsTo(me);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Hakan"));
+		sn.sendFriendshipTo("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(her.hasFriend("Hakan"));
+	}
 	
+	@Test
+	public void autoAcceptFriendshipWhenAlreadyFriends() {
+		joinHakanAndCecile();
+		sn.autoAcceptFriendshipsTo(me);
+		sn.sendFriendshipTo("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(her.hasFriend("Hakan"));
+		sn.sendFriendshipTo("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(her.hasFriend("Hakan"));
+		assertEquals(0, me.getOutgoingRequests().size());
+		assertEquals(0, her.getOutgoingRequests().size());
+	}
+
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");

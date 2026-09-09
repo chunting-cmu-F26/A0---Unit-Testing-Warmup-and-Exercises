@@ -15,6 +15,8 @@ public class Account  {
 	
 	// list of members who are friends of this account's owner
 	private Set<String> friends = new HashSet<String>();
+
+	private Boolean Auto = false;
 	
 	public Account(String userName) {
 		this.userName = userName;
@@ -40,8 +42,14 @@ public class Account  {
 			return;
 		}
 		if (!friends.contains(fromAccount.getUserName())) {
-			incomingRequests.add(fromAccount.getUserName());
-			fromAccount.outgoingRequests.add(this.userName);
+			if (Auto) {
+				fromAccount.incomingRequests.add(this.userName);
+				friendshipAccepted(fromAccount);
+			}
+			else {
+				incomingRequests.add(fromAccount.getUserName());
+				fromAccount.outgoingRequests.add(this.userName);
+			}
 		}
 	}
 
@@ -71,6 +79,10 @@ public class Account  {
 		toAccount.outgoingRequests.remove(this.getUserName());
 	}
 	
+	public void autoAcceptFriendships() {
+		Auto = true;
+	}
+
 	public Set<String> getFriends() {
 		return friends;
 	}

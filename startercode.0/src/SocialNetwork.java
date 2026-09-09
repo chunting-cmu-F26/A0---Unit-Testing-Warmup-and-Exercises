@@ -86,4 +86,11 @@ public class SocialNetwork {
 			rejectFriendshipFrom(requesterName, me);
 		}
 	}
+
+	public void autoAcceptFriendshipsTo(Account me) {
+		if (me == null) {
+			return;
+		}
+		me.autoAcceptFriendships();
+	}
 }
