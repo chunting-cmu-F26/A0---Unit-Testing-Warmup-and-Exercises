@@ -57,6 +57,15 @@ public class SocialNetwork {
 		accountForUserName.friendshipAccepted(me);
 	}
 
+	public void rejectFriendshipFrom(String herUserName, Account me) {
+		Account accountForUserName = findAccountForUserName(herUserName);
+		if (accountForUserName == null) {
+			return;
+		}
+		accountForUserName.friendshipRejected(me);
+	}
+
+
 	public void acceptAllFriendshipsTo(Account me) {
 		if (me == null) {
 			return;

@@ -175,6 +175,14 @@ public class SocialNetworkTest {
 		assertEquals(0, me.getFriends().size());
 	}
 
+	@Test
+	public void rejectFriendshipFromRemovesTargetFromOutgoingRequests() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.rejectFriendshipFrom("Hakan", her);
+		assertFalse(me.getOutgoingRequests().contains("Cecile"));
+	}
+
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");

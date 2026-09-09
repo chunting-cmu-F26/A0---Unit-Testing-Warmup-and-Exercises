@@ -45,6 +45,14 @@ public class Account  {
 		}
 	}
 
+	public void friendshipRejected(Account fromAccount) {
+		if (fromAccount == null || fromAccount.getUserName().equals(userName)) {
+			return;
+		}
+		outgoingRequests.remove(fromAccount.getUserName());
+		fromAccount.incomingRequests.remove(this.userName);
+	}
+
 	// check if account owner has a member with user name userName as a friend
 	public boolean hasFriend(String userName) {
 		return friends.contains(userName);
