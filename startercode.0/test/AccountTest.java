@@ -126,6 +126,84 @@ public class AccountTest {
 		me.requestFriendship(her);
 		assertFalse(her.getOutgoingRequests().contains(me.getUserName()));
 	}
+	
+	@Test
+	public void rejectingRequestRemovesItFromOutgoingRequests() {
+		her.requestFriendship(me);
+		assertTrue(me.getOutgoingRequests().contains(her.getUserName()));
+		me.friendshipRejected(her);
+		assertFalse(me.getOutgoingRequests().contains(her.getUserName()));
+	}
+
+	@Test
+	public void rejectingRequestRemovesItFromIncoimingRequests() {
+		me.requestFriendship(her);
+		assertTrue(me.getIncomingRequests().contains(her.getUserName()));
+		her.friendshipRejected(me);
+		assertFalse(me.getIncomingRequests().contains(her.getUserName()));
+	}
+
+	@Test
+	public void rejectingRequestWithoutPendingDoesNothing() {
+		assertTrue(me.getIncomingRequests().size() == 0);
+		assertTrue(me.getOutgoingRequests().size() == 0);
+		her.friendshipRejected(me);
+		assertTrue(me.getIncomingRequests().size() == 0);
+		assertTrue(me.getOutgoingRequests().size() == 0);
+	}
+
+	@Test
+	public void selfRejectDoesNothing() {
+		assertTrue(me.getIncomingRequests().size() == 0);
+		assertTrue(me.getOutgoingRequests().size() == 0);
+		me.friendshipRejected(me);
+		assertTrue(me.getIncomingRequests().size() == 0);
+		assertTrue(me.getOutgoingRequests().size() == 0);
+	}
+
+	@Test
+	public void cancelFriendshipRemovesBothFromFriendList() {
+		becomeFriends(her, me);
+		me.cancelFriendship(her);
+		assertFalse(me.hasFriend(her.getUserName()));
+		assertFalse(her.hasFriend(me.getUserName()));
+	}
+
+	@Test
+	public void cancelFriendshipWhenNotFriendsDoesNothing() {
+		me.cancelFriendship(her);
+		assertFalse(me.hasFriend(her.getUserName()));
+		assertFalse(her.hasFriend(me.getUserName()));
+	}
+
+	@Test
+	public void selfCancelFriendshipDoesAffectOtherAccounts() {
+		becomeFriends(her, me);
+		me.cancelFriendship(me);
+		assertTrue(me.hasFriend(her.getUserName()));
+		assertTrue(her.hasFriend(me.getUserName()));
+	}
+
+	@Test
+	public void autoAcceptFriendshipWorks() {
+		me.autoAcceptFriendships();
+		assertFalse(me.hasFriend(her.getUserName()));
+		me.requestFriendship(her);
+		assertTrue(me.hasFriend(her.getUserName()));
+	}
+
+	@Test
+	public void autoAcceptFriendshipDoesNotWorkWhenAlreadyFriends() {
+		becomeFriends(her, me);
+		assertTrue(me.hasFriend(her.getUserName()));
+		assertEquals(1, me.getFriends().size());
+		assertEquals(1, her.getFriends().size());
+		me.autoAcceptFriendships();
+		me.requestFriendship(her);
+		assertEquals(1, me.getFriends().size());
+		assertEquals(1, her.getFriends().size());
+	}
+
 
 	private void becomeFriends(Account requester, Account receiver) {
 		receiver.requestFriendship(requester);
