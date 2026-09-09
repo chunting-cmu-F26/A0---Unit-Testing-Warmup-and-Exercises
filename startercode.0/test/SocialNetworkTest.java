@@ -152,6 +152,17 @@ public class SocialNetworkTest {
 	}
 
 	@Test
+	public void acceptAllFriendshipsToNullDoesNothing() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Hakan", her);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptAllFriendshipsTo(null);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Serra"));
+	}
+
+
+	@Test
 	public void acceptAllFriendshipsToClearsIncomingRequests() {
 		Account another = joinHakanCecileAndSerra();
 		sn.sendFriendshipTo("Hakan", her);
@@ -184,6 +195,14 @@ public class SocialNetworkTest {
 	}
 
 	@Test
+	public void rejectFriendshipFromNullDoesNothing() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.rejectFriendshipFrom(null, her);
+		assertTrue(me.getOutgoingRequests().contains("Cecile"));
+	}
+
+	@Test
 	public void rejectAllFriendshipsToClearsIncomingRequests() {
 		Account another = joinHakanCecileAndSerra();
 		sn.sendFriendshipTo("Cecile", me);
@@ -191,6 +210,16 @@ public class SocialNetworkTest {
 		assertEquals(2, her.getIncomingRequests().size());
 		sn.rejectAllFriendshipsTo(her);
 		assertEquals(0, her.getIncomingRequests().size());
+	}
+
+	@Test
+	public void rejectAllFriendshipsToNullDoesNothing() {
+		Account another = joinHakanCecileAndSerra();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.sendFriendshipTo("Cecile", another);
+		assertEquals(2, her.getIncomingRequests().size());
+		sn.rejectAllFriendshipsTo(null);
+		assertEquals(2, her.getIncomingRequests().size());
 	}
 
 	@Test
@@ -214,6 +243,17 @@ public class SocialNetworkTest {
 		sn.sendFriendshipTo("Hakan", her);
 		assertTrue(me.hasFriend("Cecile"));
 		assertTrue(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void autoAcceptFriendshipWithNullDoesNothing() {
+		joinHakanAndCecile();
+		sn.autoAcceptFriendshipsTo(null);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(me.hasFriend("Hakan"));
+		sn.sendFriendshipTo("Hakan", her);
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(her.hasFriend("Hakan"));
 	}
 	
 	@Test
@@ -300,7 +340,7 @@ public class SocialNetworkTest {
 		sn.leave(me);
 		assertEquals(0, her.getOutgoingRequests().size());
 	}
-	
+
 	@Test
 	public void leaveNetworkWithNullDoesNothing() {
 		joinHakanAndCecile();

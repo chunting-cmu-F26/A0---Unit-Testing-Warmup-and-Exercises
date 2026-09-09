@@ -34,6 +34,12 @@ public class AccountTest {
 		assertTrue(me.getIncomingRequests().contains(another.getUserName()));
 		assertTrue(me.getIncomingRequests().contains(her.getUserName()));
 	}
+
+	@Test
+	public void requestFriendshipfromNullDoesNothing() {
+		me.requestFriendship(null);
+		assertEquals(0, me.getIncomingRequests().size());
+	}
 	
 	@Test
 	public void duplicateRequestKeepsIncomingSizeAtOne() {
@@ -89,6 +95,14 @@ public class AccountTest {
 	}
 
 	@Test
+	public void acceptFriendshipWithNullDoesNothing() {
+		her.requestFriendship(me);
+		her.friendshipAccepted(null);
+		assertFalse(me.hasFriend(her.getUserName()));
+		assertFalse(her.hasFriend(me.getUserName()));
+	}
+
+	@Test
 	public void acceptClearsReverseIncomingRequest() {
 		me.requestFriendship(her);
 		her.requestFriendship(me);
@@ -136,6 +150,14 @@ public class AccountTest {
 	}
 
 	@Test
+	public void rejectingRequestfromNullDoesNothing() {
+		her.requestFriendship(me);
+		assertTrue(me.getOutgoingRequests().contains(her.getUserName()));
+		me.friendshipRejected(null);
+		assertTrue(me.getOutgoingRequests().contains(her.getUserName()));
+	}
+
+	@Test
 	public void rejectingRequestRemovesItFromIncoimingRequests() {
 		me.requestFriendship(her);
 		assertTrue(me.getIncomingRequests().contains(her.getUserName()));
@@ -167,6 +189,14 @@ public class AccountTest {
 		me.cancelFriendship(her);
 		assertFalse(me.hasFriend(her.getUserName()));
 		assertFalse(her.hasFriend(me.getUserName()));
+	}
+
+	@Test
+	public void cancelFriendshipWithNullDoesNothing() {
+		becomeFriends(her, me);
+		me.cancelFriendship(null);
+		assertTrue(me.hasFriend(her.getUserName()));
+		assertTrue(her.hasFriend(me.getUserName()));
 	}
 
 	@Test
