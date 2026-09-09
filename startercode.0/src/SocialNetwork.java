@@ -101,4 +101,18 @@ public class SocialNetwork {
 		}
 		accountForUserName.cancelFriendship(me);
 	}
+
+	public void leave(Account me) {
+		if (me == null) {
+			return;
+		}
+		for (Account each : accounts) {
+			if (each.hasFriend(me.getUserName())) {
+				each.cancelFriendship(me);
+			}
+			each.getIncomingRequests().remove(me.getUserName());
+			each.getOutgoingRequests().remove(me.getUserName());
+		}
+		accounts.remove(me);
+	}
 }

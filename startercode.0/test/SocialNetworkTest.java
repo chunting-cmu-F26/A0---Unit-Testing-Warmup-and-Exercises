@@ -272,6 +272,46 @@ public class SocialNetworkTest {
 		assertTrue(me.hasFriend("Cecile"));
 		assertFalse(me.hasFriend("Ghost"));
 	}
+	
+	@Test 
+	public void leaveNetworkRemovesMeFromFriends() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		sn.acceptFriendshipFrom("Hakan", her);
+		assertTrue(me.hasFriend("Cecile"));
+		sn.leave(me);
+		assertFalse(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void leaveNetworkRemovesMeFromIncomingRequest() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Cecile", me);
+		assertEquals(1, her.getIncomingRequests().size());
+		sn.leave(me);
+		assertEquals(0, her.getIncomingRequests().size());
+	}
+
+	@Test
+	public void leaveNetworkRemovesMeFromOutgoingRequest() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Hakan", her);
+		assertEquals(1, her.getOutgoingRequests().size());
+		sn.leave(me);
+		assertEquals(0, her.getOutgoingRequests().size());
+	}
+	
+	@Test
+	public void leaveNetworkWithNullDoesNothing() {
+		joinHakanAndCecile();
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(her.hasFriend("Hakan"));
+		sn.leave(null);
+		assertTrue(me.hasFriend("Cecile"));
+		assertTrue(her.hasFriend("Hakan"));
+	}
 
 	private void joinHakanAndCecile() {
 		me = sn.join("Hakan");
